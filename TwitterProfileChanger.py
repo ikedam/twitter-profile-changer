@@ -26,7 +26,7 @@
 
 import argparse
 import base64
-import ConfigParser
+import configparser as ConfigParser
 import logging
 import os
 import os.path
@@ -34,7 +34,7 @@ import rauth
 import random
 import stat
 import sys
-import urllib
+import urllib.parse
 
 # The directory this script is put in.
 # This is useful especially when launched from cron.
@@ -84,7 +84,7 @@ class TwitterProfileChanger(object):
         self._Account = account
         if accountsdir:
             self._AccountsDir = getAbsolutePath(BASEDIR, accountsdir)
-        self._AccountDir = os.path.join(self._AccountsDir, urllib.quote(account, ''))
+        self._AccountDir = os.path.join(self._AccountsDir, urllib.parse.quote(account, ''))
         self._AccountConfFile = os.path.join(self._AccountDir, 'account.conf')
         
         if os.path.exists(self._AccountConfFile):
@@ -127,7 +127,7 @@ class TwitterProfileChanger(object):
         for key, value in self._accountConf.iteritems():
             config.set(SECTION, key, value)
         
-        oldmask = os.umask(077)
+        oldmask = os.umask(0o77)
         config.write(open(self._AccountConfFile, 'w'))
         os.umask(oldmask)
     
